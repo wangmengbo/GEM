@@ -1,4 +1,5 @@
 function []=GEM(HiC_file,loci_file,max_iter,M,lambdaE,infer_latent,input_sizepara)
+t = cputime;
 
 % ----------------------- Overview ------------------------ %
 % Main function for GEM                                     %
@@ -49,11 +50,12 @@ if M>1
 end
 % Output reconstructed structure to 'conformation[1-M].txt'
 for m=1:M
-    dlmwrite(['conformation' num2str(m) '.txt'],structure(:,:,m),'delimiter', '\t','precision','%6.4f');
+%     dlmwrite(['conformation' num2str(m) '.txt'],structure(:,:,m),'delimiter', '\t','precision','%6.4f');
+    dlmwrite([HiC_file '.GEM.txt'],structure(:,:,m),'delimiter', '\t','precision','%6.4f');
 end
 
 % Output the corresponding weights of conformations to 'proportions.txt'
-dlmwrite('proportions.txt',proportions,'delimiter', '\t','precision','%6.4f');
+dlmwrite([HiC_file '.proportions.txt'],proportions,'delimiter', '\t','precision','%6.4f');
 
 disp (['Total cost (C): ' num2str(C)]);
 disp (['Data cost (C1): ' num2str(C1)]);
@@ -68,6 +70,8 @@ if infer_latent==1
     LatentFunction( X(index,index),structure,M,proportions );
 end
 
+e = cputime-t
+disp(['time=' num2str(e)])
 disp('=================================================================');
 
 
